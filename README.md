@@ -36,6 +36,8 @@ Nouns will be categorised as follows:
 * Whether the plural form adheres to a general rule
 
 
+In the near future, the following features will be added:
+
 * A fully fleshed back- and frontend utilising Flask, Bootstrap etc. Individual user scores. Animations and custom CSS. 
 
 
