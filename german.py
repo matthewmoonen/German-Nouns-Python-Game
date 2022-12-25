@@ -1,7 +1,7 @@
 import sqlite3
 from sqlite3 import Error
 import random
-import re
+
 
 def main():
     
@@ -64,39 +64,31 @@ def rules_and_name(conn):
 
     cur = conn.cursor()
     cur.execute("SELECT COUNT(name) FROM player_scores WHERE name = ?", [player])
-    player_exists = cur.fetchone()
-    player_exists = int(re.sub(r'[^0-9]', '', str(player_exists)))
-    if player_exists != 0:
+
+    if cur.fetchone() == 1:
         return player
     else:    
         params = (player, 0)
         cur.execute("INSERT INTO player_scores(name, high_score) VALUES(?, ?)", params)
+        return player
 
 
 
 def get_number_of_entries(conn):
     """ Get the number of entries in the database
     This allows the game to dynamically adapt to changes in the database, introducing or removing words from the pool as necessary"""
+    
     cur = conn.cursor()
     cur.execute("SELECT COUNT(*) FROM nouns_de")
 
-
-
-
-    # There's gotta be an easier way to do this.
-    # This function gets the number of entries in the format "(2956,)".
-    # That means that the return needs to be converted to string and stripped using regex before it can be converted to an int. 
-    # Surely there is some way to query the integer directly from the database. The entries themselves are stored as integers in the database.
-    number = cur.fetchone()
-    return int(re.sub(r'[^0-9]', '', str(number)))
+    return cur.fetchone()[0]
 
 
 def record_score(conn, name, score):
     
     cur = conn.cursor()
     cur.execute("SELECT high_score FROM player_scores WHERE name = ?", [name])
-    previous_high = cur.fetchone()
-    previous_high = int(re.sub(r'[^0-9]', '', str(previous_high)))
+    previous_high = cur.fetchone()[0]
 
     print(f"Your score: {score}")
     
